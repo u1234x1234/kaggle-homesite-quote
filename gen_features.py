@@ -4,6 +4,7 @@ import xgboost as xgb
 from sklearn import preprocessing
 from sklearn.cross_validation import train_test_split
 import scipy
+from scipy import stats
 
 seed = 260681
 
@@ -31,10 +32,31 @@ test['weekday'] = test['Date'].dt.dayofweek
 train = train.drop('Date', axis=1)
 test = test.drop('Date', axis=1)
 
-train = train.fillna(0)
-test = test.fillna(0)
+train = train.fillna(-1)
+test = test.fillna(-1)
 
-mask = (train.dtypes == 'object').values
+def count_less_0(df):
+    df["Below0"] = np.sum(df<0, axis = 1)
+    return df
+
+def count_0(df):
+    cols = [col for col in df.columns if col != "QuoteConversion_Flag"]
+    df["CountZero"]=np.sum(df[cols] == 0, axis = 1)
+    return df
+
+train = count_less_0(train)
+test = count_less_0(test)
+
+#train['Year_cat'] = train['Year'].astype('object')
+#test['Year_cat'] = test['Year'].astype('object')
+
+train['Month_cat'] = train['Month'].astype('object')
+test['Month_cat'] = test['Month'].astype('object')
+
+train['weekday_cat'] = train['weekday'].astype('object')
+test['weekday_cat'] = test['weekday'].astype('object')
+
+mask = (train.dtypes=='object').values
 
 for f in train.columns:
     if train[f].dtype=='object':

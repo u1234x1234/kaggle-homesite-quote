@@ -19,26 +19,26 @@ print (indices_test.shape, data_test.shape, indptr_test.shape)
 
 sp = sparse.csr_matrix((data, indices, indptr), dtype=np.float32)
 sp_test = sparse.csr_matrix((data_test, indices_test, indptr_test))
-print (sp.shape, sp_test.shape, y.shape)
 
+print (sp.shape, sp_test.shape, y.shape)
 print (np.histogram(y, 2))
 print (y)
 
 params = {'booster':'gbtree',
      'max_depth':7,
-#     'min_child_weight':4,
+#     'min_child_weight':0,
      'eta':0.1,
-#     'gamma':0.25,
+#     'gamma':1.,
      'silent':1,
      'objective':'binary:logistic',
-#     'lambda':1.,
+     'lambda':2.,
 #     'alpha':1.0,
 #      'lambda_bias':0.5,
      'nthread':8,
 #      'max_delta_step': 1,
-     'subsample':0.83,
+     'subsample':0.9,
 #     'num_class':2,
-      'colsample_bytree':0.77,
+      'colsample_bytree':0.9,
      'eval_metric':'auc'
      }
 DX = xgb.DMatrix(sp, y)
